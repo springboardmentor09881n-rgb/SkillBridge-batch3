@@ -24,7 +24,35 @@ public class AuthController {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             return ResponseEntity.badRequest().body(Map.of("message", "Email already exists"));
         }
-        
+
+        // Role validation
+        if (!user.getRole().equalsIgnoreCase("VOLUNTEER") &&
+                !user.getRole().equalsIgnoreCase("NGO")) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Invalid role"));
+        }
+
+        // Volunteer cleanup we remove NGO fields
+        if (user.getRole().equalsIgnoreCase("VOLUNTEER")) {
+            user.setOrganizationName(null);
+            user.setOrganizationDescription(null);
+            user.setWebsiteUrl(null);
+        }
+
+        // NGO cleanup we remove volunteer fields
+        if (user.getRole().equalsIgnoreCase("NGO")) {
+            user.setSkills(null);
+            user.setBio(null);
+        }
+
+        // For NGO must provide organization info
+        if (user.getRole().equalsIgnoreCase("NGO")) {
+            if (user.getOrganizationName() == null ||
+                    user.getOrganizationDescription() == null) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "NGO must provide organization details"));
+            }
+        }
         // Save user directly
         User savedUser = userRepository.save(user);
         
@@ -34,6 +62,7 @@ public class AuthController {
         response.put("username", savedUser.getUsername());
         response.put("email", savedUser.getEmail());
         response.put("fullName", savedUser.getFullName());
+        response.put("role", savedUser.getRole());
         response.put("message", "Signup successful");
         
         return ResponseEntity.ok(response);
@@ -59,8 +88,16 @@ public class AuthController {
         response.put("username", user.getUsername());
         response.put("email", user.getEmail());
         response.put("fullName", user.getFullName());
+        response.put("role", user.getRole());
         response.put("message", "Login successful");
         
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/test")
+    public String test() {
+        return "Backend running successfully!";
+    }
+
+
 }
+
