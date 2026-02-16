@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillBridge</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        nav { margin-bottom: 20px; padding: 10px; background: #f0f0f0; }
+        nav a { margin-right: 15px; }
+        form { max-width: 400px; }
+        input { display: block; width: 100%; margin: 5px 0 15px; padding: 8px; }
+        button { padding: 10px 20px; }
+        .message { margin-top: 10px; padding: 10px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <nav>
+        <strong>SkillBridge</strong> | 
+        <a href="#" onclick="showPage('login')" id="loginLink">Login</a>
+        <a href="#" onclick="showPage('signup')" id="signupLink">Signup</a>
+        <a href="#" onclick="showPage('home')" id="homeLink" style="display:none;">Home</a>
+        <a href="#" onclick="logout()" id="logoutLink" style="display:none;">Logout</a>
+    </nav>
+
+    <div id="home" class="page">
+        <h1>Welcome to SkillBridge</h1>
+    </div>
+
+    <div id="login" class="page active">
+        <h2>Login</h2>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <label>Email</label>
+            <input type="email" id="loginEmail" required>
+            
+            <label>Password</label>
+            <input type="password" id="loginPassword" required>
+            
+            <button type="submit">Login</button>
+            <div id="loginMessage"></div>
+        </form>
+        <p>Don't have an account? <a href="#" onclick="showPage('signup')">Sign up</a></p>
+    </div>
+
+    <div id="signup" class="page">
+        <h2>Sign Up</h2>
+        <form id="signupForm" onsubmit="handleSignup(event)">
+            <label>Username</label>
+            <input type="text" id="signupUsername" required>
+            
+            <label>Full Name</label>
+            <input type="text" id="signupFullName" required>
+            
+            <label>Email</label>
+            <input type="email" id="signupEmail" required>
+            
+            <label>Password</label>
+            <input type="password" id="signupPassword" required>
+            
+            <button type="submit">Sign Up</button>
+            <div id="signupMessage"></div>
+        </form>
+        <p>Already have an account? <a href="#" onclick="showPage('login')">Login</a></p>
+    </div>
+
+    <script src="../src/js/api.js"></script>
+    <script src="../src/js/app.js"></script>
+</body>
+</html>
