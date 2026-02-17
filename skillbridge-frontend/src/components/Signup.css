@@ -1,0 +1,134 @@
+.signup-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background: #f2f4f7;
+}
+
+
+.signup-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden; 
+}
+
+.signup-card h2 {
+  text-align: center;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #565656;
+  margin-bottom: 20px;
+}
+
+.signup-card label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  color: #000000;   /* Add this line */
+
+}
+
+
+.signup-card input,
+.signup-card select,
+.signup-card textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  color: #070808;
+  background-color: #f0f9ff;
+
+  box-sizing: border-box;
+}
+
+.signup-card input:focus,
+.signup-card select:focus,
+.signup-card textarea:focus {
+  border-color: #3b82f6;
+}
+
+.signup-card textarea {
+  resize: none;
+  height: 80px;
+}
+
+.signup-card button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  background: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.signup-card button:hover {
+  background: #1e40af;
+}
+
+.signin-link {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 15px;
+  color: #6b7280;
+}
+
+.signin-link span {
+  color: #2563eb;
+  cursor: pointer;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #6b7280 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+.password-toggle {
+  color: #000000;
+  
+}
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 35px;   /* space for eye icon */
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #6b7280;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #000000;   /* black icon */
+}

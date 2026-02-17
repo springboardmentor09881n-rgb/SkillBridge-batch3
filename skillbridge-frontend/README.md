@@ -1,91 +1,16 @@
-# SkillBridge Frontend
+# React + Vite
 
-A basic HTML/CSS/JavaScript frontend application with a React-like file structure.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Project Structure
+Currently, two official plugins are available:
 
-```
-skillbridge-frontend/
-├── public/
-│   └── index.html          # Main HTML file
-├── src/
-│   ├── js/
-│   │   ├── api.js          # API service for backend communication
-│   │   └── app.js          # Main application logic
-│   └── styles/
-│       └── style.css       # Application styles
-├── package.json
-└── README.md
-```
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Features
+## React Compiler
 
-- **Login & Signup**: User authentication with backend API
-- **Users List**: View all registered users
-- **Responsive Design**: Mobile-friendly interface
-- **Modern UI**: Clean and professional design
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## API Endpoints Used
+## Expanding the ESLint configuration
 
-The frontend connects to these backend endpoints:
-
-- `POST /api/auth/signup` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/users` - Get all users
-- `GET /api/users/{id}` - Get user by ID
-
-## How to Run
-
-1. Make sure your backend server is running on `http://localhost:8080`
-
-2. Open the `public/index.html` file in your web browser:
-   - Double-click the file, or
-   - Right-click and select "Open with Browser", or
-   - Use a local server (recommended for development)
-
-### Using Live Server (Recommended)
-
-If you have VS Code with Live Server extension:
-
-1. Right-click on `public/index.html`
-2. Select "Open with Live Server"
-
-### Using Python HTTP Server
-
-```bash
-cd skillbridge-frontend/public
-python -m http.server 3000
-```
-
-Then open `http://localhost:3000` in your browser.
-
-## Configuration
-
-The backend API URL is configured in `src/js/api.js`:
-
-```javascript
-const API_BASE_URL = 'http://localhost:8080/api';
-```
-
-Change this if your backend is running on a different port or host.
-
-## Usage
-
-1. **Home Page**: Landing page with welcome message
-2. **Signup**: Create a new account with username, full name, email, and password
-3. **Login**: Log in with your email and password
-4. **Users**: View all registered users (only visible after login)
-
-## Browser Compatibility
-
-This application uses modern JavaScript features and should work in:
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## Notes
-
-- User session is stored in `localStorage`
-- Passwords are sent in plain text (use HTTPS in production)
-- CORS is enabled in the backend (`@CrossOrigin(origins = "*")`)
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
