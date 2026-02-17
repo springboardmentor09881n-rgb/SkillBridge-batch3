@@ -4,7 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Form from "./components/form/form";
+import Form from "./components/form/Form"
 import Login from "./components/login/Login";
 import "./App.css";
 

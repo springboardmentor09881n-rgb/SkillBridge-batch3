@@ -10,7 +10,7 @@ const Form = () => {
     password: "",
     fullName: "",
     userType: "",
-    organizationName: "", 
+    organizationName: "",
     location: "",
     skills: "",
   });
@@ -20,9 +20,26 @@ const Form = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Account Created:", formData);
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Success: Account created for " + formData.userName);
+        navigate("/"); // Redirect to login
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (error) {
+      alert("Backend is not running. Check your terminal!");
+    }
   };
 
   return (

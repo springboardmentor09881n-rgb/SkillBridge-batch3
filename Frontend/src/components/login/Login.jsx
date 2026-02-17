@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true); 
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "volunteer", 
+    role: "volunteer",
     fullName: "",
     organizationName: "",
   });
@@ -17,9 +17,29 @@ const Login = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(isLogin ? "Logging in..." : "Registering...", formData);
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token); // Save login session
+        alert("Welcome back, " + data.user.fullName);
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Login failed", error);
+    }
   };
 
   return (
@@ -114,7 +134,7 @@ const Login = () => {
 
         <div className="mt-6 text-center">
           <button
-            onClick={() => navigate("/signup")} 
+            onClick={() => navigate("/signup")}
             className="text-sm text-gray-600 hover:text-[#428fec] underline underline-offset-4"
           >
             Don't have an account? Sign up
