@@ -65,4 +65,11 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/test")
+    public String test() {
+        return "Backend running successfully!";
+    }
+
+
 }
+
