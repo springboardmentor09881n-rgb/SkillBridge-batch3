@@ -1,0 +1,123 @@
+.signup-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--bg-main);
+  padding: 40px 20px;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-card);
+  padding: 32px 28px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.signup-card h2 {
+  text-align: center;
+  margin-bottom: 6px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.signup-card .subtitle {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+}
+
+.signup-card label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 5px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.signup-card input,
+.signup-card select,
+.signup-card textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  color: var(--text-primary);
+  background-color: #f8fafc;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.signup-card input:focus,
+.signup-card select:focus,
+.signup-card textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.signup-card textarea {
+  resize: none;
+  height: 80px;
+}
+
+.signup-card select {
+  cursor: pointer;
+}
+
+.signup-card .password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.signup-card .password-wrapper input {
+  padding-right: 40px;
+}
+
+.signup-card .password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.signup-card button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.signup-card button:hover {
+  opacity: 0.9;
+}
+
+.signin-link {
+  text-align: center;
+  font-size: 0.85rem;
+  margin-top: 16px;
+  color: var(--text-muted);
+}
+
+.signin-link span {
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+}

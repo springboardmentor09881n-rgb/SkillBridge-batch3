@@ -1,129 +1,36 @@
-# SkillBridge Backend - Basic Version
+### SkillBridge Backend
+> Backend REST API for the SkillBridge platform — connecting volunteers with NGOs.
 
-Super simple authentication API - just the bare minimum.
-
-## Structure
+### Project Structure
 
 ```
 src/main/java/com/skillbridge/
+├── SkillbridgeBackendApplication.java   # Main application entry point
 ├── controller/
-│   ├── AuthController.java    # Login & Signup
-│   └── UserController.java    # Get users
+│   ├── AuthController.java              # Signup & Login endpoints
+│   └── UserController.java              # User CRUD endpoints
 ├── model/
-│   └── User.java              # User entity (plain Java)
+│   └── User.java                        # User entity (JPA)
 └── repository/
-    └── UserRepository.java    # Database access
+    └── UserRepository.java              # Database access (Spring Data JPA)
 ```
 
 ## Setup
-
-1. **Create Database:**
+> **1. Create the database:**
 ```sql
 CREATE DATABASE skillbridge_db;
 ```
 
-2. **Update `application.properties`:**
+>  **2. Update `src/main/resources/application.properties`:**
 ```properties
+spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/skillbridge_db
 spring.datasource.username=YOUR_USERNAME
 spring.datasource.password=YOUR_PASSWORD
 ```
 
-3. **Run:**
+>  **3. Run the application:**
 ```bash
+# Windows
 mvnw.cmd spring-boot:run
 ```
-
-Server runs on: `http://localhost:8080`
-
-## API Endpoints
-
-### Signup
-```
-POST http://localhost:8080/api/auth/signup
-
-Body:
-{
-  "username": "john",
-  "email": "john@example.com",
-  "password": "password123",
-  "fullName": "John Doe"
-}
-
-Response:
-{
-  "id": 1,
-  "username": "john",
-  "email": "john@example.com",
-  "fullName": "John Doe",
-  "message": "Signup successful"
-}
-```
-
-### Login
-```
-POST http://localhost:8080/api/auth/login
-
-Body:
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-
-Response:
-{
-  "id": 1,
-  "username": "john",
-  "email": "john@example.com",
-  "fullName": "John Doe",
-  "message": "Login successful"
-}
-```
-
-### Get All Users
-```
-GET http://localhost:8080/api/users
-```
-
-### Get User by ID
-```
-GET http://localhost:8080/api/users/1
-```
-
-## Frontend Integration
-
-```javascript
-// Signup
-fetch('http://localhost:8080/api/auth/signup', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    username: 'john',
-    email: 'john@example.com',
-    password: 'password123',
-    fullName: 'John Doe'
-  })
-})
-.then(res => res.json())
-.then(data => console.log(data));
-
-// Login
-fetch('http://localhost:8080/api/auth/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    email: 'john@example.com',
-    password: 'password123'
-  })
-})
-.then(res => res.json())
-.then(data => console.log(data));
-```
-
-## Notes
-
-- **No security** - Passwords stored in plain text
-- **No validation** - Add validation as needed
-- **No authentication** - All endpoints are public
-- **CORS enabled** - Frontend can call from anywhere
-
-This is a starter template. Add security, validation, and authentication as your project grows.
+> Server starts on: `http://localhost:8080`

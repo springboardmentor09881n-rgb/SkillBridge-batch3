@@ -1,91 +1,35 @@
-# SkillBridge Frontend
+### SkillBridge Frontend
+> A React-based frontend for the SkillBridge platform — connecting volunteers with NGOs to create real community impact.
 
-A basic HTML/CSS/JavaScript frontend application with a React-like file structure.
+#### Pages
 
-## Project Structure
+| Route | Component | Description |
+|---|---|---|
+| `/` | Home | Landing page (requires login) |
+| `/login` | Login | Email/password login |
+| `/signup` | Signup | Account creation with role selection (Volunteer / NGO) |
+| `/volunteer-dashboard` | VolunteerDashboard | Profile view for volunteers |
+| `/ngo-dashboard` | NgoDashboard | Profile view for NGOs |
 
+
+#### Project Structure
 ```
-skillbridge-frontend/
-├── public/
-│   └── index.html          # Main HTML file
-├── src/
-│   ├── js/
-│   │   ├── api.js          # API service for backend communication
-│   │   └── app.js          # Main application logic
-│   └── styles/
-│       └── style.css       # Application styles
-├── package.json
-└── README.md
-```
-
-## Features
-
-- **Login & Signup**: User authentication with backend API
-- **Users List**: View all registered users
-- **Responsive Design**: Mobile-friendly interface
-- **Modern UI**: Clean and professional design
-
-## API Endpoints Used
-
-The frontend connects to these backend endpoints:
-
-- `POST /api/auth/signup` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/users` - Get all users
-- `GET /api/users/{id}` - Get user by ID
-
-## How to Run
-
-1. Make sure your backend server is running on `http://localhost:8080`
-
-2. Open the `public/index.html` file in your web browser:
-   - Double-click the file, or
-   - Right-click and select "Open with Browser", or
-   - Use a local server (recommended for development)
-
-### Using Live Server (Recommended)
-
-If you have VS Code with Live Server extension:
-
-1. Right-click on `public/index.html`
-2. Select "Open with Live Server"
-
-### Using Python HTTP Server
-
-```bash
-cd skillbridge-frontend/public
-python -m http.server 3000
+src/
+├── components/
+│   ├── Navbar.jsx / Navbar.css
+│   ├── Home.jsx / Home.css
+│   ├── Login.jsx / Login.css
+│   ├── Signup.jsx / Signup.css
+│   ├── NgoDashboard.jsx
+│   ├── VolunteerDashboard.jsx
+│   └── Dashboard.css
+├── services/
+├── App.jsx / App.css
+├── index.css
+└── main.jsx
 ```
 
-Then open `http://localhost:3000` in your browser.
-
-## Configuration
-
-The backend API URL is configured in `src/js/api.js`:
-
-```javascript
-const API_BASE_URL = 'http://localhost:8080/api';
-```
-
-Change this if your backend is running on a different port or host.
-
-## Usage
-
-1. **Home Page**: Landing page with welcome message
-2. **Signup**: Create a new account with username, full name, email, and password
-3. **Login**: Log in with your email and password
-4. **Users**: View all registered users (only visible after login)
-
-## Browser Compatibility
-
-This application uses modern JavaScript features and should work in:
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## Notes
-
-- User session is stored in `localStorage`
-- Passwords are sent in plain text (use HTTPS in production)
-- CORS is enabled in the backend (`@CrossOrigin(origins = "*")`)
+#### Backend API
+The frontend expects the backend at `http://localhost:8080` with these endpoints:
+-  `POST /api/auth/login` — Login with email & password
+- `POST /api/auth/signup` — Register a new account
