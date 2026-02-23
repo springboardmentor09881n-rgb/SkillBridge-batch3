@@ -2,74 +2,82 @@ package com.skillbridge.controller;
 
 import com.skillbridge.model.User;
 import com.skillbridge.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.skillbridge.service.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    // Signup endpoint
+    //Signup endpoint
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
-        // Check if user exists
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Email already exists"));
+
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Email already exists"));
         }
 
-        // Save user directly
+        // Encode password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         User savedUser = userRepository.save(user);
 
-        // Return user info
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", savedUser.getId());
-        response.put("username", savedUser.getUsername());
-        response.put("email", savedUser.getEmail());
-        response.put("fullName", savedUser.getFullName());
-        response.put("role", savedUser.getRole());
-        response.put("message", "Signup successful");
+        Map<String, Object> userData = Map.of(
+                "id", savedUser.getId(),
+                "username", savedUser.getUsername(),
+                "email", savedUser.getEmail(),
+                "role", savedUser.getRole()
+        );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of(
+                "message", "Signup successful",
+                "user", userData
+        ));
     }
+
 
     // Login endpoint
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String email = credentials.get("email");
-        String password = credentials.get("password");
+    public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
 
-        // Find user by email
-        User user = userRepository.findByEmail(email);
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.get("email"),
+                        request.get("password")
+                )
+        );
 
-        // Check if user exists and password matches
-        if (user == null || !user.getPassword().equals(password)) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Invalid email or password"));
-        }
+        User user = userRepository.findByEmail(request.get("email"))
+                .orElseThrow();
 
-        // Return user info
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", user.getId());
-        response.put("username", user.getUsername());
-        response.put("email", user.getEmail());
-        response.put("fullName", user.getFullName());
-        response.put("role", user.getRole());
-        response.put("message", "Login successful");
+        String token = jwtService.generateToken(user.getEmail());
 
-        return ResponseEntity.ok(response);
+        Map<String, Object> userData = Map.of(
+                "id", user.getId(),
+                "username", user.getUsername(),
+                "email", user.getEmail(),
+                "role", user.getRole()
+        );
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Login successful",
+                "token", token,
+                "user", userData
+        ));
     }
-    @GetMapping("/test")
-    public String test() {
-        return "Backend running successfully!";
-    }
-
-
 }
-
