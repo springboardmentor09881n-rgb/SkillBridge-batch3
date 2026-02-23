@@ -33,7 +33,24 @@ const Form = () => {
 
       if (response.ok) {
         alert("Success: Account created for " + formData.userName);
-        navigate("/"); // Redirect to login
+
+        // 1. If your backend sends a token on signup, save it
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+
+        const newUser = data.user || formData;
+
+        // 2. ADDED: Save the user info so dashboards survive page refreshes
+        localStorage.setItem("user", JSON.stringify(newUser));
+
+        // 3. Redirect based on the userType they selected in the dropdown
+        if (formData.userType === "organization") {
+          navigate("/OrganizationDashboard", { state: { user: newUser } });
+        } else {
+          // If they selected 'volunteer' (or left it blank)
+          navigate("/VolunteerDashboard", { state: { user: newUser } });
+        }
       } else {
         alert("Error: " + data.message);
       }

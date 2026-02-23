@@ -21,7 +21,25 @@ router.post("/signup", async (req, res) => {
     user = new User({ ...req.body, password: hashedPassword });
     await user.save();
 
-    res.status(201).json({ message: "User registered successfully" });
+    // NEW: Generate a token so they are instantly logged in
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // NEW: Send back the token and the user data, just like in login!
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        userName: user.userName,
+        email: user.email,
+        userType: user.userType,
+        organizationName: user.organizationName,
+        organizationDescription: user.organizationDescription,
+      },
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -41,12 +59,18 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    // res.json({ token, user: { id: user._id, userName: user.userName, userType: user.userType } });
+
+    // THE FIX: Send back all the necessary data, especially userType!
     res.json({
       token,
       user: {
         id: user._id,
-        fullName: user.fullName, // Make sure this line exists!
+        fullName: user.fullName,
+        userName: user.userName,
+        email: user.email,
+        userType: user.userType, // <-- THIS is what your frontend was missing!
+        organizationName: user.organizationName,
+        organizationDescription: user.organizationDescription,
       },
     });
   } catch (err) {

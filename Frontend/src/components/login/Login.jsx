@@ -32,18 +32,37 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token); // Save login session
-        alert("Welcome back, " + data.user.fullName);
+        // 1. Save the token to verify the user is logged in
+        localStorage.setItem("token", data.token);
+
+        // 2. ADDED: Save the user info so dashboards survive page refreshes
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        const loggedInUser = data.user;
+        const actualRole = loggedInUser?.userType;
+
+        if (!actualRole) {
+          alert("Error: The backend did not return a 'userType'.");
+          return;
+        }
+
+        // 3. Redirect STRICTLY based on the database role
+        if (actualRole === "organization" || actualRole === "ngo") {
+          navigate("/OrganizationDashboard", { state: { user: loggedInUser } });
+        } else if (actualRole === "volunteer") {
+          navigate("/VolunteerDashboard", { state: { user: loggedInUser } });
+        }
       } else {
         alert(data.message);
       }
     } catch (error) {
       console.error("Login failed", error);
+      alert("Login failed. Check your terminal or backend connection.");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-black to-[#2d2929] p-5 font-sans">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-white to-[#aedaf6] p-5 font-sans">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-[400px]">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
           {isLogin ? "Welcome Back" : "Join SkillBridge"}
