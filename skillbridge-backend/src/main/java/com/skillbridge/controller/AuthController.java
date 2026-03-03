@@ -3,7 +3,6 @@ package com.skillbridge.controller;
 import com.skillbridge.model.User;
 import com.skillbridge.repository.UserRepository;
 import com.skillbridge.service.JwtService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,13 +14,24 @@ import java.util.*;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+
+    public AuthController(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtService jwtService
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
 
     //Signup endpoint
     @PostMapping("/signup")
