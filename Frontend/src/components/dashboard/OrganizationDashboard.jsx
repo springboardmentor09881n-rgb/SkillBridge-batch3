@@ -1,9 +1,12 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import CreateOpportunityModal from "./CreateOpportunityModal";
 
 const OrganizationDashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = location.state?.user || JSON.parse(localStorage.getItem("user"));
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans text-gray-800">
@@ -13,7 +16,7 @@ const OrganizationDashboard = () => {
           <h1 className="text-xl font-extrabold tracking-tight text-black">SkillBridge</h1>
           <div className="hidden md:flex space-x-8 text-sm font-medium text-gray-500">
             <span className="text-black border-b-2 border-black pb-1 cursor-pointer">Dashboard</span>
-            <span className="hover:text-black cursor-pointer transition-colors">Opportunities</span>
+            <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/OrganizationDashboard/Opportunities')}>Opportunities</span>
             <span className="hover:text-black cursor-pointer transition-colors">Applications</span>
             <span className="hover:text-black cursor-pointer transition-colors">Messages</span>
           </div>
@@ -48,7 +51,7 @@ const OrganizationDashboard = () => {
                 <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
                 Dashboard
               </li>
-              <li className="hover:bg-gray-50 px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-colors">
+              <li onClick={() => navigate('/OrganizationDashboard/Opportunities')} className="hover:bg-gray-50 px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-colors">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
                 Opportunities
               </li>
@@ -69,7 +72,7 @@ const OrganizationDashboard = () => {
 
         {/* MAIN CONTENT */}
         <main className="flex-1 space-y-6">
-          
+
           {/* Overview Cards */}
           <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h3 className="font-bold text-gray-900 mb-5">Overview</h3>
@@ -101,7 +104,7 @@ const OrganizationDashboard = () => {
                 View All
               </button>
             </div>
-            
+
             {/* Sample Application Card */}
             <div className="border border-gray-100 rounded-lg p-5">
               <div className="flex justify-between items-start mb-4">
@@ -123,9 +126,12 @@ const OrganizationDashboard = () => {
           <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h3 className="font-bold text-gray-900 mb-5">Quick Actions</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              
+
               {/* Create Opportunity Button */}
-              <button className="flex flex-col items-center justify-center py-8 border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-sm hover:bg-gray-50 transition-all group">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="flex flex-col items-center justify-center py-8 border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-sm hover:bg-gray-50 transition-all group"
+              >
                 <div className="w-12 h-12 rounded-full border-2 border-gray-300 flex items-center justify-center mb-3 group-hover:border-gray-400 transition-colors">
                   <svg className="w-6 h-6 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                 </div>
@@ -144,6 +150,9 @@ const OrganizationDashboard = () => {
           </section>
         </main>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && <CreateOpportunityModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 };

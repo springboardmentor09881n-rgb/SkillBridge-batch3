@@ -6,8 +6,9 @@ const OpportunitySchema = new mongoose.Schema({
   // This links the opportunity to the specific NGO that created it
   organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   location: { type: String },
+  duration: { type: String },
   skillsRequired: [{ type: String }], // Array of skills
-  status: { type: String, enum: ['active', 'closed'], default: 'active' },
+  status: { type: String, enum: ['Open', 'Closed', 'Draft', 'active', 'closed'], default: 'Open' },
   createdAt: { type: Date, default: Date.now }
 });
 

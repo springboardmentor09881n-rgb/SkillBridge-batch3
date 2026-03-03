@@ -8,6 +8,7 @@ import Form from "./components/form/Form";
 import Login from "./components/login/Login";
 import VolunteerDashboard from "./components/dashboard/VolunteerDashboard";
 import OrganizationDashboard from "./components/dashboard/OrganizationDashboard";
+import OrganizationOpportunities from "./components/dashboard/OrganizationOpportunities";
 
 // Import your new ProtectedRoute!
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -26,6 +27,15 @@ function App() {
           element={
             <ProtectedRoute allowedRole="organization">
               <OrganizationDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/OrganizationDashboard/Opportunities"
+          element={
+            <ProtectedRoute allowedRole="organization">
+              <OrganizationOpportunities />
             </ProtectedRoute>
           }
         />
