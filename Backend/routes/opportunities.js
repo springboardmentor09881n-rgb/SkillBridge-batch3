@@ -2,6 +2,16 @@ const express = require('express');
 const router = express.Router();
 const Opportunity = require('../models/Opportunity');
 
+// Get all opportunities (for volunteers)
+router.get('/', async (req, res) => {
+    try {
+        const opportunities = await Opportunity.find().sort({ createdAt: -1 });
+        res.json(opportunities);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // Get all opportunities for a specific NGO
 router.get('/ngo/:ngoId', async (req, res) => {
     try {

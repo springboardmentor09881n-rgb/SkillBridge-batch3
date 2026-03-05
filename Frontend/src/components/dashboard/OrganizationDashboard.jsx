@@ -8,6 +8,11 @@ const OrganizationDashboard = () => {
   const user = location.state?.user || JSON.parse(localStorage.getItem("user"));
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-[#fafafa] font-sans text-gray-800">
       {/* TOP NAVIGATION */}
@@ -66,6 +71,19 @@ const OrganizationDashboard = () => {
             </ul>
             <div className="mt-8 px-7 text-xs font-bold text-gray-400 uppercase tracking-widest">
               Organization Info
+            </div>
+
+            {/* Logout Button */}
+            <div className="mt-4 pt-4 border-t border-gray-100 px-3">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-semibold transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </button>
             </div>
           </div>
         </aside>

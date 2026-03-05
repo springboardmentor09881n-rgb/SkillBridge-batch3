@@ -1,9 +1,46 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import ViewOpportunityModal from "./ViewOpportunityModal";
 
 const VolunteerDashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const user = location.state?.user || JSON.parse(localStorage.getItem("user"));
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+  const [opportunities, setOpportunities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [viewingOpp, setViewingOpp] = useState(null);
+
+  const fetchOpportunities = async (isBackground = false) => {
+    try {
+      if (!isBackground) setLoading(true);
+      const response = await fetch("http://localhost:5000/api/opportunities");
+      if (response.ok) {
+        const data = await response.json();
+        setOpportunities(data);
+      }
+    } catch (error) {
+      console.error("Error fetching opportunities:", error);
+    } finally {
+      if (!isBackground) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOpportunities();
+
+    // Poll for new opportunities every 10 seconds
+    const intervalId = setInterval(() => {
+      fetchOpportunities(true);
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   // Helper function to get initials for the avatar (e.g., "Test Volunteer" -> "TV")
   const getInitials = (name) => {
@@ -97,6 +134,19 @@ const VolunteerDashboard = () => {
               </h3>
               <p className="text-sm text-gray-500">No recent activity</p>
             </div>
+
+            {/* Logout Button */}
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-semibold transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </button>
+            </div>
           </div>
         </aside>
 
@@ -119,93 +169,65 @@ const VolunteerDashboard = () => {
 
             {/* Opportunity List */}
             <div className="flex flex-col">
-              {/* Item 1 */}
-              <div className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-bold text-gray-900 text-lg">
-                    Website Redesign for Local Shelter
-                  </h3>
-                  <span className="px-3 py-1 bg-[#22c55e] text-white text-xs font-bold rounded-full">
-                    Open
-                  </span>
+              {loading ? (
+                <div className="text-center py-10 text-gray-500">Loading opportunities...</div>
+              ) : opportunities.length === 0 ? (
+                <div className="text-center py-10 text-gray-500 bg-white">
+                  No opportunities available right now.
                 </div>
-                <p className="text-sm text-gray-500 mb-4">NGO ID: 2</p>
-                <p className="text-sm text-gray-700 mb-4 leading-relaxed">
-                  Help us redesign our website to improve our online presence
-                  and reach more potential adopters.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
-                    Web Development
-                  </span>
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
-                    UI/UX Design
-                  </span>
-                </div>
-                <button className="text-sm text-gray-600 hover:text-black font-medium flex items-center gap-1 transition-colors">
-                  View details <span className="text-lg leading-none">›</span>
-                </button>
-              </div>
-
-              {/* Item 2 */}
-              <div className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-bold text-gray-900 text-lg">
-                    Translation of Educational Materials
-                  </h3>
-                  <span className="px-3 py-1 bg-[#22c55e] text-white text-xs font-bold rounded-full">
-                    Open
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">NGO ID: 2</p>
-                <p className="text-sm text-gray-700 mb-4 leading-relaxed">
-                  Translate educational materials from English to Spanish,
-                  French, or Arabic to support our global literacy programs.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
-                    Translation
-                  </span>
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
-                    Language Skills
-                  </span>
-                </div>
-                <button className="text-sm text-gray-600 hover:text-black font-medium flex items-center gap-1 transition-colors">
-                  View details <span className="text-lg leading-none">›</span>
-                </button>
-              </div>
-
-              {/* Item 3 */}
-              <div className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-bold text-gray-900 text-lg">
-                    Fundraising Gala Event Coordinator
-                  </h3>
-                  <span className="px-3 py-1 bg-[#22c55e] text-white text-xs font-bold rounded-full">
-                    Open
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 mb-4">NGO ID: 2</p>
-                <p className="text-sm text-gray-700 mb-4 leading-relaxed">
-                  Help plan and coordinate our annual fundraising gala to
-                  support children's medical research.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
-                    Event Planning
-                  </span>
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full">
-                    Marketing
-                  </span>
-                </div>
-                <button className="text-sm text-gray-600 hover:text-black font-medium flex items-center gap-1 transition-colors">
-                  View details <span className="text-lg leading-none">›</span>
-                </button>
-              </div>
+              ) : (
+                opportunities.map((opp) => (
+                  <div key={opp._id} className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-start mb-1">
+                      <h3 className="font-bold text-gray-900 text-lg">
+                        {opp.title}
+                      </h3>
+                      <span className="px-3 py-1 bg-[#22c55e] text-white text-xs font-bold rounded-full">
+                        {opp.status}
+                      </span>
+                    </div>
+                    {/* Assuming ngo info is desired, currently we don't have ngo name, fallback to ID */}
+                    <p className="text-sm text-gray-500 mb-4">NGO ID: {opp.organizationId}</p>
+                    <p className="text-sm text-gray-700 mb-4 leading-relaxed whitespace-pre-line">
+                      {opp.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {opp.skillsRequired && opp.skillsRequired.map((skill) => (
+                        <span key={skill} className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium border border-blue-600">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center text-xs text-gray-500 gap-4 mb-4">
+                      <div className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        {opp.location}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        {opp.duration}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setViewingOpp(opp)}
+                      className="text-sm text-gray-600 hover:text-black font-medium flex items-center gap-1 transition-colors"
+                    >
+                      View details <span className="text-lg leading-none">›</span>
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </main>
       </div>
+
+      {viewingOpp && (
+        <ViewOpportunityModal
+          opportunity={viewingOpp}
+          onClose={() => setViewingOpp(null)}
+        />
+      )}
     </div>
   );
 };
