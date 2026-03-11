@@ -36,6 +36,18 @@ public class OpportunityController {
         return opportunityRepository.findAll();
     }
 
+    // Filter for skills
+    @GetMapping("/filter/skill/{skill}")
+    public List<Opportunity> filterBySkill(@PathVariable String skill) {
+        return opportunityRepository.findByRequiredSkillsContainingIgnoreCase(skill);
+    }
+
+    //Filter for location
+    @GetMapping("/filter/location/{location}")
+    public List<Opportunity> filterByLocation(@PathVariable String location) {
+        return opportunityRepository.findByLocationContainingIgnoreCase(location);
+    }
+
     // Delete opportunity
     @DeleteMapping("/{id}")
     public void deleteOpportunity(@PathVariable Long id) {
