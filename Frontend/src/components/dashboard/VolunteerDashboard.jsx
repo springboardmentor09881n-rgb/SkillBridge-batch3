@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Search, MapPin, Clock, Star } from "lucide-react";
 import ViewOpportunityModal from "./ViewOpportunityModal";
 
 const VolunteerDashboard = () => {
@@ -15,6 +16,13 @@ const VolunteerDashboard = () => {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewingOpp, setViewingOpp] = useState(null);
+
+  // Filters
+  const [searchQuery, setSearchQuery] = useState("");
+  const [skillFilter, setSkillFilter] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
+  const [durationFilter, setDurationFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("Open");
 
   const fetchOpportunities = async (isBackground = false) => {
     try {
@@ -155,16 +163,94 @@ const VolunteerDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Find Opportunities Header */}
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Find Opportunities
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                Volunteering Opportunities
               </h2>
-              <p className="text-sm text-gray-600 mb-5">
-                Discover volunteering opportunities that match your skills and
-                interests.
+              <p className="text-sm text-gray-500 mb-6">
+                Find opportunities that match your skills and interests
               </p>
-              <button className="w-full bg-[#3b82f6] hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition-colors">
-                Browse All Opportunities
-              </button>
+
+              {/* Filters */}
+              <div className="p-5 border border-gray-200 rounded-xl mb-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Skills Column */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Skills</label>
+                    <div className="relative mb-3">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Search className="h-4 w-4 text-gray-400" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Search skills..."
+                        className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        value={skillFilter}
+                        onChange={(e) => setSkillFilter(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {["Web Development", "Translation", "Marketing"].map(skill => (
+                        <button
+                          key={skill}
+                          onClick={() => setSkillFilter(skill)}
+                          className="px-3 py-1.5 border border-gray-200 rounded-md text-xs font-medium text-gray-800 hover:bg-gray-50 transition-colors bg-white shadow-sm"
+                        >
+                          {skill}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Location Column */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <div className="relative mb-3">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Search className="h-4 w-4 text-gray-400" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Search locations..."
+                        className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                        value={locationFilter}
+                        onChange={(e) => setLocationFilter(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {["New York", "Remote", "Chicago"].map(loc => (
+                        <button
+                          key={loc}
+                          onClick={() => setLocationFilter(loc)}
+                          className="px-3 py-1.5 border border-gray-200 rounded-md text-xs font-medium text-gray-800 hover:bg-gray-50 transition-colors bg-white shadow-sm"
+                        >
+                          {loc}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Status Column */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <div className="relative">
+                      <select
+                        className="block w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 appearance-none text-gray-900"
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                      >
+                        <option value="Open">Open</option>
+                        <option value="Closed">Closed</option>
+                        <option value="All">All Statuses</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Opportunity List */}
@@ -176,46 +262,66 @@ const VolunteerDashboard = () => {
                   No opportunities available right now.
                 </div>
               ) : (
-                opportunities.map((opp) => (
-                  <div key={opp._id} className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                    <div className="flex justify-between items-start mb-1">
-                      <h3 className="font-bold text-gray-900 text-lg">
-                        {opp.title}
-                      </h3>
-                      <span className="px-3 py-1 bg-[#22c55e] text-white text-xs font-bold rounded-full">
-                        {opp.status}
-                      </span>
-                    </div>
-                    {/* Assuming ngo info is desired, currently we don't have ngo name, fallback to ID */}
-                    <p className="text-sm text-gray-500 mb-4">NGO ID: {opp.organizationId}</p>
-                    <p className="text-sm text-gray-700 mb-4 leading-relaxed whitespace-pre-line">
-                      {opp.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {opp.skillsRequired && opp.skillsRequired.map((skill) => (
-                        <span key={skill} className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium border border-blue-600">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="flex items-center text-xs text-gray-500 gap-4 mb-4">
-                      <div className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        {opp.location}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        {opp.duration}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setViewingOpp(opp)}
-                      className="text-sm text-gray-600 hover:text-black font-medium flex items-center gap-1 transition-colors"
-                    >
-                      View details <span className="text-lg leading-none">›</span>
-                    </button>
+                opportunities.filter(opp => {
+                  const matchesSearch = !searchQuery || opp.title.toLowerCase().includes(searchQuery.toLowerCase());
+                  const matchesSkill = !skillFilter || (opp.skillsRequired && opp.skillsRequired.some(s => s.toLowerCase().includes(skillFilter.toLowerCase())));
+                  const matchesLocation = !locationFilter || (opp.location && opp.location.toLowerCase().includes(locationFilter.toLowerCase()));
+                  const matchesDuration = !durationFilter || (opp.duration && opp.duration.toString().toLowerCase().includes(durationFilter.toLowerCase()));
+                  const matchesStatus = statusFilter === "All" || !opp.status || (opp.status && opp.status.toLowerCase() === statusFilter.toLowerCase());
+                  return matchesSearch && matchesSkill && matchesLocation && matchesDuration && matchesStatus;
+                }).length === 0 ? (
+                  <div className="text-center py-10 text-gray-500 bg-white">
+                    No matching opportunities found.
                   </div>
-                ))
+                ) : (
+                  opportunities.filter(opp => {
+                    const matchesSearch = !searchQuery || opp.title.toLowerCase().includes(searchQuery.toLowerCase());
+                    const matchesSkill = !skillFilter || (opp.skillsRequired && opp.skillsRequired.some(s => s.toLowerCase().includes(skillFilter.toLowerCase())));
+                    const matchesLocation = !locationFilter || (opp.location && opp.location.toLowerCase().includes(locationFilter.toLowerCase()));
+                    const matchesDuration = !durationFilter || (opp.duration && opp.duration.toString().toLowerCase().includes(durationFilter.toLowerCase()));
+                    const matchesStatus = statusFilter === "All" || !opp.status || (opp.status && opp.status.toLowerCase() === statusFilter.toLowerCase());
+                    return matchesSearch && matchesSkill && matchesLocation && matchesDuration && matchesStatus;
+                  }).map((opp) => (
+                    <div key={opp._id} className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                      <div className="flex justify-between items-start mb-1">
+                        <h3 className="font-bold text-gray-900 text-lg">
+                          {opp.title}
+                        </h3>
+                        <span className="px-3 py-1 bg-[#22c55e] text-white text-xs font-bold rounded-full">
+                          {opp.status}
+                        </span>
+                      </div>
+                      {/* Assuming ngo info is desired, currently we don't have ngo name, fallback to ID */}
+                      <p className="text-sm text-gray-500 mb-4">NGO ID: {opp.organizationId}</p>
+                      <p className="text-sm text-gray-700 mb-4 leading-relaxed whitespace-pre-line">
+                        {opp.description}
+                      </p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {opp.skillsRequired && opp.skillsRequired.map((skill) => (
+                          <span key={skill} className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium border border-blue-600">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500 gap-4 mb-4">
+                        <div className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                          {opp.location}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          {opp.duration}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setViewingOpp(opp)}
+                        className="text-sm text-gray-600 hover:text-black font-medium flex items-center gap-1 transition-colors"
+                      >
+                        View details <span className="text-lg leading-none">›</span>
+                      </button>
+                    </div>
+                  ))
+                )
               )}
             </div>
           </div>

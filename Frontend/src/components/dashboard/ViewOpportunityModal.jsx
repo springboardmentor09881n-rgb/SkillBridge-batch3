@@ -1,6 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const ViewOpportunityModal = ({ opportunity, onClose }) => {
+    const [isApplying, setIsApplying] = useState(false);
+    const [applySuccess, setApplySuccess] = useState(false);
+    const [applyError, setApplyError] = useState('');
+
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const handleApply = async () => {
+        if (!user) {
+            setApplyError('You must be logged in to apply.');
+            return;
+        }
+
+        setIsApplying(true);
+        setApplyError('');
+
+        try {
+            const response = await fetch('http://localhost:5000/api/applications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    opportunityId: opportunity._id,
+                    volunteerId: user._id || user.id // Depending on what's stored in local storage
+                }),
+            });
+
+            if (response.ok) {
+                setApplySuccess(true);
+            } else {
+                const data = await response.json();
+                setApplyError(data.message || 'Failed to submit application.');
+            }
+        } catch (error) {
+            setApplyError('An error occurred while submitting. Please try again later.');
+        } finally {
+            setIsApplying(false);
+        }
+    };
+
     if (!opportunity) return null;
 
     return (
@@ -40,7 +80,7 @@ const ViewOpportunityModal = ({ opportunity, onClose }) => {
                     </div>
                 </div>
 
-                <div>
+                <div className="mb-6">
                     <h3 className="text-sm font-semibold text-gray-800 mb-3">Skills Required</h3>
                     <div className="flex flex-wrap gap-2">
                         {opportunity.skillsRequired && opportunity.skillsRequired.length > 0 ? (
@@ -53,6 +93,38 @@ const ViewOpportunityModal = ({ opportunity, onClose }) => {
                             <span className="text-sm text-gray-500 italic">No skills required</span>
                         )}
                     </div>
+                </div>
+
+                {/* Apply Button Section */}
+                <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col items-center">
+                    {applyError && <p className="text-red-500 text-sm mb-3">{applyError}</p>}
+
+                    {applySuccess ? (
+                        <div className="bg-green-50 text-green-700 px-6 py-3 rounded-lg border border-green-200 text-center w-full font-medium">
+                            ✓ Application submitted successfully!
+                        </div>
+                    ) : (
+                        <button
+                            onClick={handleApply}
+                            disabled={isApplying || opportunity.status === 'Closed'}
+                            className={`w-full py-3 px-6 rounded-xl font-bold text-white transition-all transform active:scale-[0.98] ${opportunity.status === 'Closed'
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : 'bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg'
+                                } disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+                        >
+                            {isApplying ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Submitting Application...
+                                </>
+                            ) : (
+                                opportunity.status === 'Closed' ? 'Opportunity Closed' : 'Apply Now'
+                            )}
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
