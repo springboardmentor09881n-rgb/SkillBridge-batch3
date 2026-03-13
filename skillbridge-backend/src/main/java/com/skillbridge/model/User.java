@@ -25,6 +25,12 @@ public class User {
     @Column
     private String role = "volunteer";
 
+    @Column
+    private String skills;
+
+    @Column
+    private String location;
+
     // Constructors
     public User() {
     }
@@ -85,5 +91,21 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

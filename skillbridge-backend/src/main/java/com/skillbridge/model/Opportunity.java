@@ -26,9 +26,11 @@ public class Opportunity {
 
     @ManyToOne
     @JoinColumn(name = "ngo_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "password", "hibernateLazyInitializer", "handler" })
     private User ngo;
 
-    public Opportunity() {}
+    public Opportunity() {
+    }
 
     public Long getId() {
         return id;
