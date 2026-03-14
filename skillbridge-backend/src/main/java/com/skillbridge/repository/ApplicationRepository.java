@@ -11,5 +11,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>{
     List<Application> findByOpportunityId(Long opportunityId);
 
     List<Application> findByVolunteerId(Long volunteerId);
+
+    List<Application> findByOpportunityNgoId(Long ngoId);
 }
 
