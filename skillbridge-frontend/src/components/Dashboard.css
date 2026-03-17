@@ -4,10 +4,20 @@
 }
 
 .dashboard-main {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 40px 24px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
+
+/* Side-by-side layout used by both volunteer and NGO dashboards */
+.dashboard-main.two-col {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
 
 .dash-profile-card {
   background: var(--bg-card);
@@ -26,7 +36,7 @@
 .dash-profile-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 18px 24px;
 }
 
 .dash-detail {
@@ -49,8 +59,588 @@
   color: var(--text-primary);
 }
 
+/* Edit Profile button */
+.dash-edit-btn {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dash-edit-btn:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+/* ── Opportunities Section ── */
+.dash-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  box-shadow: var(--shadow-md);
+}
+
+.dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.dash-section-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.opp-count {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(79, 70, 229, 0.08);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.opp-org {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* Opportunity cards list */
+.opp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.opp-empty {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.opp-card {
+  border: 1px solid #e8eef5;
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.opp-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.opp-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.opp-title {
+  font-size: 0.98rem;
+  font-weight: 650;
+  color: var(--text-primary);
+}
+
+.opp-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.opp-status.open {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.opp-status.closed {
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--text-muted);
+}
+
+.opp-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+
+.opp-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.opp-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(79, 70, 229, 0.08);
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.opp-info {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.opp-info span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.opp-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit-opp {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit-opp:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-delete-opp {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1.5px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete-opp:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.modal-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
 @media (max-width: 768px) {
   .dash-profile-grid {
     grid-template-columns: 1fr;
+  }
+
+  .modal-field-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .dashboard-main.two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-main {
+    padding: 24px 16px;
+  }
+}
+/* ───────────────────────────────────────────────────────────── */
+/*                   Volunteer Dashboard Layout                */
+/* ───────────────────────────────────────────────────────────── */
+
+.volunteer-dashboard {
+  min-height: 100vh;
+  background: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+}
+
+.volunteer-dashboard-container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: calc(100vh - 63px);
+}
+
+/* ── LEFT SIDEBAR ── */
+.volunteer-sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: var(--bg-card);
+  border-right: 1px solid #e5e7eb;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.volunteer-profile-section {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.profile-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.profile-role {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-weight: 500;
+}
+
+.volunteer-edit-btn {
+  margin-top: 12px;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.84rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.volunteer-edit-btn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.sidebar-section {
+  margin-bottom: 20px;
+}
+
+.sidebar-section h3 {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px 0;
+}
+
+.no-skills p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.add-skills-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 0;
+  text-decoration: none;
+  transition: all 0.2s;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.add-skills-btn:hover {
+  opacity: 0.8;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.skill-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(79, 70, 229, 0.08);
+  color: var(--primary);
+  display: inline-block;
+  width: fit-content;
+  border: 1px solid rgba(79, 70, 229, 0.15);
+}
+
+.no-activity {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── MAIN CONTENT AREA ── */
+.volunteer-main-content {
+  flex: 1;
+  padding: 20px;
+  background: var(--bg-main);
+  overflow-y: auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.opportunities-header {
+  margin-bottom: 20px;
+}
+
+.opportunities-content {
+  max-width: 800px;
+  width: 100%;
+}
+
+.opportunities-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.opportunities-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.browse-all-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.browse-all-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.opportunities-section {
+  margin-top: 16px;
+}
+
+.no-opportunities {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  padding: 48px 24px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+}
+
+.opportunities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.opportunity-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.opportunity-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: #e2e8f0;
+}
+
+.opportunity-header {
+  margin-bottom: 12px;
+}
+
+.opportunity-title-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.opportunity-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.opportunity-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.opportunity-status.open {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.opportunity-ngo {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.opportunity-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+.opportunity-skills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.opportunity-skill-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.view-details-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.view-details-btn:hover {
+  opacity: 0.8;
+}
+
+/* ── Mobile Responsive ── */
+@media (max-width: 768px) {
+  .volunteer-dashboard-container {
+    flex-direction: column;
+  }
+
+  .volunteer-sidebar {
+    width: 100%;
+    min-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 24px 20px;
+  }
+
+  .volunteer-main-content {
+    padding: 20px 16px;
+  }
+
+  .opportunities-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .browse-all-btn {
+    max-width: none;
+  }
+
+  .opportunity-title-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .profile-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .sidebar-section {
+    margin-bottom: 24px;
   }
 }

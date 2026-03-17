@@ -21,6 +21,12 @@ public class Application {
     @Column(nullable = false)
     private String status = "PENDING";
 
+    private String motivation;
+
+    private String availability;
+
+    private String contactNote;
+
     public Application() {}
 
     public Long getId() { return id; }
@@ -33,4 +39,28 @@ public class Application {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getMotivation() {
+        return motivation;
+    }
+
+    public void setMotivation(String motivation) {
+        this.motivation = motivation;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
+    }
+
+    public String getContactNote() {
+        return contactNote;
+    }
+
+    public void setContactNote(String contactNote) {
+        this.contactNote = contactNote;
+    }
 }

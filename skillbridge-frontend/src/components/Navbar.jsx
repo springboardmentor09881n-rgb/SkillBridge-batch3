@@ -13,35 +13,50 @@ function Navbar() {
 
     const dashboardPath = user?.role === "ngo" ? "/ngo-dashboard" : "/volunteer-dashboard";
 
+    const isActive = (path) => location.pathname === path;
+    const isDashboard = location.pathname.includes("dashboard");
+
     return (
         <nav className="navbar">
             <div className="navbar-accent"></div>
             <div className="navbar-container">
+
+                {/* Brand — left */}
                 <div className="navbar-brand" onClick={() => navigate("/")}>
+                    <span className="brand-icon">🌉</span>
                     <span className="brand-text">SkillBridge</span>
                 </div>
 
-                <div className="navbar-center">
-                    {user && (
-                        <>
+                {/* Nav links — centre */}
+                {user && (
+                    <div className="navbar-center">
+                        <span
+                            className={`nav-link ${isActive("/home") ? "active" : ""}`}
+                            onClick={() => navigate("/home")}
+                        >
+                            Home
+                        </span>
+                        <span
+                            className={`nav-link ${isDashboard ? "active" : ""}`}
+                            onClick={() => navigate(dashboardPath)}
+                        >
+                            Dashboard
+                        </span>
+                        {/* Volunteers see Opportunities, NGOs manage within dashboard */}
+                        {user.role !== "ngo" && (
                             <span
-                                className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
-                                onClick={() => navigate("/")}
+                                className={`nav-link ${isActive("/opportunities") ? "active" : ""}`}
+                                onClick={() => navigate("/opportunities")}
                             >
-                                Home
+                                Opportunities
                             </span>
-                            <span
-                                className={`nav-link ${location.pathname.includes("dashboard") ? "active" : ""}`}
-                                onClick={() => navigate(dashboardPath)}
-                            >
-                                Dashboard
-                            </span>
-                        </>
-                    )}
-                </div>
+                        )}
+                    </div>
+                )}
 
+                {/* User info / auth buttons — right */}
                 <div className="navbar-right">
-                    {user && (
+                    {user ? (
                         <>
                             <div className="user-avatar">
                                 {(user.fullName || user.username || "U").charAt(0).toUpperCase()}
@@ -51,6 +66,15 @@ function Navbar() {
                             </span>
                             <button className="logout-btn" onClick={handleLogout}>
                                 Logout
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button className="nav-signin-btn" onClick={() => navigate("/login")}>
+                                Sign In
+                            </button>
+                            <button className="nav-getstarted-btn" onClick={() => navigate("/signup")}>
+                                Get Started
                             </button>
                         </>
                     )}

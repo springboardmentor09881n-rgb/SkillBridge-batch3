@@ -5,9 +5,11 @@ import com.skillbridge.model.User;
 import com.skillbridge.repository.OpportunityRepository;
 import com.skillbridge.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/opportunities")
@@ -22,11 +24,9 @@ public class OpportunityController {
     // Create opportunity (NGO only)
     @PostMapping("/create/{ngoId}")
     public Opportunity createOpportunity(@RequestBody Opportunity opportunity,
-                                         @PathVariable Long ngoId) {
-
+            @PathVariable Long ngoId) {
         User ngo = userRepository.findById(ngoId).orElseThrow();
         opportunity.setNgo(ngo);
-
         return opportunityRepository.save(opportunity);
     }
 
@@ -52,5 +52,9 @@ public class OpportunityController {
     @DeleteMapping("/{id}")
     public void deleteOpportunity(@PathVariable Long id) {
         opportunityRepository.deleteById(id);
+    }
+
+    private boolean containsIgnoreCase(String value, String termLower) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(termLower);
     }
 }

@@ -31,6 +31,7 @@
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-xl: 28px;
+  --radius-full: 9999px;
 
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
