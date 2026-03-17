@@ -36,60 +36,16 @@ public class OpportunityController {
         return opportunityRepository.findAll();
     }
 
-    // Get opportunities by NGO id
-    @GetMapping("/ngo/{ngoId}")
-    public List<Opportunity> getByNgo(@PathVariable Long ngoId) {
-        return opportunityRepository.findAll().stream()
-                .filter(o -> o.getNgo() != null && o.getNgo().getId().equals(ngoId))
-                .toList();
+    // Filter for skills
+    @GetMapping("/filter/skill/{skill}")
+    public List<Opportunity> filterBySkill(@PathVariable String skill) {
+        return opportunityRepository.findByRequiredSkillsContainingIgnoreCase(skill);
     }
 
-        // Filter/search opportunities for volunteers
-        @GetMapping("/filter")
-        public List<Opportunity> filterOpportunities(
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String skill,
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) String duration) {
-
-        String searchLower = search == null ? "" : search.trim().toLowerCase(Locale.ROOT);
-        String skillLower = skill == null ? "" : skill.trim().toLowerCase(Locale.ROOT);
-        String locationLower = location == null ? "" : location.trim().toLowerCase(Locale.ROOT);
-        String durationLower = duration == null ? "" : duration.trim().toLowerCase(Locale.ROOT);
-
-        return opportunityRepository.findAll().stream()
-            .filter(o -> o.getStatus() == null || !"CLOSED".equalsIgnoreCase(o.getStatus()))
-            .filter(o -> searchLower.isBlank() ||
-                containsIgnoreCase(o.getTitle(), searchLower) ||
-                containsIgnoreCase(o.getDescription(), searchLower) ||
-                containsIgnoreCase(o.getRequiredSkills(), searchLower) ||
-                containsIgnoreCase(o.getLocation(), searchLower) ||
-                (o.getNgo() != null && containsIgnoreCase(o.getNgo().getFullName(), searchLower)))
-            .filter(o -> skillLower.isBlank() || containsIgnoreCase(o.getRequiredSkills(), skillLower))
-            .filter(o -> locationLower.isBlank() || containsIgnoreCase(o.getLocation(), locationLower))
-            .filter(o -> durationLower.isBlank() || containsIgnoreCase(o.getDuration(), durationLower))
-            .toList();
-        }
-
-    // Edit opportunity
-    @PutMapping("/{id}")
-    public ResponseEntity<Opportunity> updateOpportunity(@PathVariable Long id,
-            @RequestBody Opportunity updates) {
-        return opportunityRepository.findById(id).map(opp -> {
-            if (updates.getTitle() != null)
-                opp.setTitle(updates.getTitle());
-            if (updates.getDescription() != null)
-                opp.setDescription(updates.getDescription());
-            if (updates.getRequiredSkills() != null)
-                opp.setRequiredSkills(updates.getRequiredSkills());
-            if (updates.getLocation() != null)
-                opp.setLocation(updates.getLocation());
-            if (updates.getDuration() != null)
-                opp.setDuration(updates.getDuration());
-            if (updates.getStatus() != null)
-                opp.setStatus(updates.getStatus());
-            return ResponseEntity.ok(opportunityRepository.save(opp));
-        }).orElse(ResponseEntity.notFound().build());
+    //Filter for location
+    @GetMapping("/filter/location/{location}")
+    public List<Opportunity> filterByLocation(@PathVariable String location) {
+        return opportunityRepository.findByLocationContainingIgnoreCase(location);
     }
 
     // Delete opportunity

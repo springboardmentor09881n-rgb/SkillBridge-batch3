@@ -139,4 +139,29 @@ public class ApplicationController {
 
         return ResponseEntity.ok(Map.of("message", "Application submitted successfully"));
     }
+
+    @GetMapping("/opportunity/{id}")
+    public List<Application> getApplications(@PathVariable Long id) {
+        return applicationRepository.findByOpportunityId(id);
+    }
+    @GetMapping("/volunteer/{volunteerId}")
+    public List<Application> getApplicationsByVolunteer(@PathVariable Long volunteerId) {
+        return applicationRepository.findByVolunteerId(volunteerId);
+    }
+
+
+    @GetMapping("/ngo/{ngoId}")
+    public List<Application> getApplicationsForNgo(@PathVariable Long ngoId) {
+        return applicationRepository.findByOpportunityNgoId(ngoId);
+    }
+
+    @PutMapping("/{id}")
+    public Application updateStatus(@PathVariable Long id,
+                                    @RequestParam String status) {
+
+        Application app = applicationRepository.findById(id).orElseThrow();
+        app.setStatus(status);
+
+        return applicationRepository.save(app);
+    }
 }
