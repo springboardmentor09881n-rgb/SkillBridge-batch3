@@ -55,7 +55,7 @@ const OrganizationOpportunities = () => {
                     <div className="hidden md:flex space-x-8 text-sm font-medium text-gray-500">
                         <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate("/OrganizationDashboard")}>Dashboard</span>
                         <span className="text-black border-b-2 border-black pb-1 cursor-pointer">Opportunities</span>
-                        <span className="hover:text-black cursor-pointer transition-colors">Applications</span>
+                        <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate("/OrganizationDashboard/Applications")}>Applications</span>
                         <span className="hover:text-black cursor-pointer transition-colors">Messages</span>
                     </div>
                 </div>

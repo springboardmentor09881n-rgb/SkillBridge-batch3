@@ -45,4 +45,42 @@ router.get('/opportunity/:opportunityId', async (req, res) => {
     }
 });
 
+// Get applications for an organization
+router.get('/organization/:orgId', async (req, res) => {
+    try {
+        // Find all opportunities for this organization
+        const Opportunity = require('../models/Opportunity');
+        const opportunities = await Opportunity.find({ organizationId: req.params.orgId });
+        const opportunityIds = opportunities.map(opp => opp._id);
+
+        // Find all applications for these opportunities
+        const applications = await Application.find({ opportunityId: { $in: opportunityIds } })
+            .populate('volunteerId', 'fullName email userType')
+            .populate('opportunityId', 'title description location duration')
+            .sort({ dateApplied: -1 });
+
+        res.json(applications);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Update application status
+router.put('/:id', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const application = await Application.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+        res.json(application);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;

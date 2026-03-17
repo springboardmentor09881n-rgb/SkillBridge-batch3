@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CreateOpportunityModal from "./CreateOpportunityModal";
 
@@ -7,6 +7,43 @@ const OrganizationDashboard = () => {
   const navigate = useNavigate();
   const user = location.state?.user || JSON.parse(localStorage.getItem("user"));
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [opportunities, setOpportunities] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user || (!user.id && !user._id)) return;
+      const userId = user.id || user._id;
+      try {
+        setLoading(true);
+        // Fetch opportunities
+        const oppRes = await fetch(`http://localhost:5000/api/opportunities/ngo/${userId}`);
+        if (oppRes.ok) {
+          const oppData = await oppRes.json();
+          setOpportunities(oppData);
+        }
+
+        // Fetch applications
+        const appRes = await fetch(`http://localhost:5000/api/applications/organization/${userId}`);
+        if (appRes.ok) {
+          const appData = await appRes.json();
+          setApplications(appData);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [user?.id, user?._id]);
+
+  const activeOpportunitiesCount = opportunities.filter(opp => opp.status === "Open" || opp.status === "active").length;
+  const applicationsCount = applications.length;
+  const activeVolunteersCount = new Set(applications.map(app => app.volunteerId?._id)).size;
+  const pendingApplicationsCount = applications.filter(app => app.status === "Pending").length;
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -22,7 +59,7 @@ const OrganizationDashboard = () => {
           <div className="hidden md:flex space-x-8 text-sm font-medium text-gray-500">
             <span className="text-black border-b-2 border-black pb-1 cursor-pointer">Dashboard</span>
             <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/OrganizationDashboard/Opportunities')}>Opportunities</span>
-            <span className="hover:text-black cursor-pointer transition-colors">Applications</span>
+            <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/OrganizationDashboard/Applications')}>Applications</span>
             <span className="hover:text-black cursor-pointer transition-colors">Messages</span>
           </div>
         </div>
@@ -60,7 +97,7 @@ const OrganizationDashboard = () => {
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
                 Opportunities
               </li>
-              <li className="hover:bg-gray-50 px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-colors">
+              <li onClick={() => navigate('/OrganizationDashboard/Applications')} className="hover:bg-gray-50 px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-colors">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 Applications
               </li>
@@ -96,19 +133,19 @@ const OrganizationDashboard = () => {
             <h3 className="font-bold text-gray-900 mb-5">Overview</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
               <div className="bg-[#f0f7ff] p-5 rounded-lg border border-blue-50">
-                <p className="text-2xl font-black text-gray-900">3</p>
+                <p className="text-2xl font-black text-gray-900">{loading ? '-' : activeOpportunitiesCount}</p>
                 <p className="text-xs font-medium text-gray-500 mt-1">Active Opportunities</p>
               </div>
               <div className="bg-[#f0fdf4] p-5 rounded-lg border border-green-50">
-                <p className="text-2xl font-black text-gray-900">1</p>
+                <p className="text-2xl font-black text-gray-900">{loading ? '-' : applicationsCount}</p>
                 <p className="text-xs font-medium text-gray-500 mt-1">Applications</p>
               </div>
               <div className="bg-[#f5f3ff] p-5 rounded-lg border border-purple-50">
-                <p className="text-2xl font-black text-purple-600">0</p>
+                <p className="text-2xl font-black text-purple-600">{loading ? '-' : activeVolunteersCount}</p>
                 <p className="text-xs font-medium text-gray-500 mt-1">Active Volunteers</p>
               </div>
               <div className="bg-[#fefce8] p-5 rounded-lg border border-yellow-50">
-                <p className="text-2xl font-black text-gray-900">1</p>
+                <p className="text-2xl font-black text-gray-900">{loading ? '-' : pendingApplicationsCount}</p>
                 <p className="text-xs font-medium text-gray-500 mt-1">Pending Applications</p>
               </div>
             </div>
@@ -123,21 +160,28 @@ const OrganizationDashboard = () => {
               </button>
             </div>
 
-            {/* Sample Application Card */}
-            <div className="border border-gray-100 rounded-lg p-5">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h4 className="font-semibold text-gray-900 text-sm">John Doe</h4>
-                  <p className="text-xs text-gray-500 mt-0.5">Applied for: Website Redesign for Local Shelter</p>
+            {/* Real Application Cards */}
+            {loading ? (
+              <p className="text-sm text-gray-500 bg-[#f8fafc] p-4 rounded-md">Loading applications...</p>
+            ) : applications.length === 0 ? (
+              <p className="text-sm text-gray-500 bg-[#f8fafc] p-4 rounded-md">No applications received yet.</p>
+            ) : (
+              applications.slice(0, 5).map(app => (
+                <div key={app._id} className="border border-gray-100 rounded-lg p-5 mb-4 last:mb-0">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h4 className="font-semibold text-gray-900 text-sm">{app.volunteerId?.fullName || "Volunteer"}</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">Applied for: {app.opportunityId?.title || "Unknown Opportunity"}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{app.volunteerId?.email}</p>
+                    </div>
+                    <span className={`px-3 py-1 bg-white border border-gray-200 text-xs font-semibold rounded-full capitalize ${app.status === 'Accepted' ? 'text-green-600' : app.status === 'Rejected' ? 'text-red-600' : 'text-gray-600'}`}>
+                      {app.status}
+                    </span>
+                  </div>
+                  {/* Additional info can be added here if present in application schema */}
                 </div>
-                <span className="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs font-semibold rounded-full">
-                  pending
-                </span>
-              </div>
-              <p className="text-sm text-gray-600 bg-[#f8fafc] p-4 rounded-md leading-relaxed">
-                I have 5 years of experience in web development and design. I've worked with several nonprofits before and would love to help improve your online presence.
-              </p>
-            </div>
+              ))
+            )}
           </section>
 
           {/* Quick Actions */}
