@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import ApplicationFormModal from "./ApplicationFormModal";
+import OpportunityDetailModal from "./OpportunityDetailModal";
+import { IconBuilding, IconMapPin, IconClock, IconExternalLink } from "./Icons";
 import "./Dashboard.css";
 import "./Opportunities.css";
 
@@ -17,6 +19,8 @@ function Opportunities() {
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState("");
     const [submitSuccess, setSubmitSuccess] = useState("");
+    const [fetchError, setFetchError] = useState("");
+    const [detailOpp, setDetailOpp] = useState(null);
 
     useEffect(() => {
         const params = new URLSearchParams();
@@ -26,16 +30,29 @@ function Opportunities() {
         if (duration.trim()) params.set("duration", duration.trim());
 
         setLoading(true);
-        fetch(`http://localhost:8080/api/opportunities/filter?${params.toString()}`)
-            .then((r) => r.json())
+        setFetchError("");
+        fetch(`http://localhost:8080/api/opportunities/filter?${params.toString()}`, { credentials: "include" })
+            .then(async (r) => {
+                if (!r.ok) {
+                    throw new Error(r.status === 401 || r.status === 403 ? "Please login again to view opportunities." : "Could not load opportunities.");
+                }
+                return r.json();
+            })
             .then((data) => { setOpportunities(data); setLoading(false); })
-            .catch(() => setLoading(false));
+            .catch((err) => {
+                setOpportunities([]);
+                setFetchError(err.message || "Could not load opportunities.");
+                setLoading(false);
+            });
     }, [search, skill, location, duration]);
 
     useEffect(() => {
         if (!user?.id || user?.role?.toUpperCase() !== "VOLUNTEER") return;
-        fetch(`http://localhost:8080/api/applications/volunteer/${user.id}`)
-            .then((r) => r.json())
+        fetch(`http://localhost:8080/api/applications/volunteer/${user.id}`, { credentials: "include" })
+            .then(async (r) => {
+                if (!r.ok) return [];
+                return r.json();
+            })
             .then((apps) => {
                 const ids = new Set(apps.map((app) => app?.opportunity?.id).filter(Boolean));
                 setAppliedIds(ids);
@@ -59,6 +76,7 @@ function Opportunities() {
         try {
             const response = await fetch("http://localhost:8080/api/applications/submit", {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     volunteerId: user.id,
@@ -132,6 +150,8 @@ function Opportunities() {
 
                 {loading ? (
                     <p className="opp-empty">Loading…</p>
+                ) : fetchError ? (
+                    <p className="opp-empty">{fetchError}</p>
                 ) : opportunities.length === 0 ? (
                     <p className="opp-empty">
                         {search || skill || location || duration
@@ -150,7 +170,7 @@ function Opportunities() {
                                 </div>
 
                                 {opp.ngo?.fullName && (
-                                    <p className="opp-org">🏢 {opp.ngo.fullName}</p>
+                                    <p className="opp-org"><IconBuilding size={14} style={{ marginRight: 4 }} /> {opp.ngo.fullName}</p>
                                 )}
 
                                 {opp.description && (
@@ -166,12 +186,18 @@ function Opportunities() {
                                 )}
 
                                 <div className="opp-info">
-                                    {opp.location && <span>📍 {opp.location}</span>}
-                                    {opp.duration && <span>🕒 {opp.duration}</span>}
+                                    {opp.location && <span><IconMapPin size={14} style={{ marginRight: 3 }} /> {opp.location}</span>}
+                                    {opp.duration && <span><IconClock size={14} style={{ marginRight: 3 }} /> {opp.duration}</span>}
                                 </div>
 
-                                {user?.role?.toUpperCase() === "VOLUNTEER" && (
-                                    <div className="opp-actions">
+                                <div className="opp-actions">
+                                    <button
+                                        className="opp-details-btn"
+                                        onClick={() => setDetailOpp(opp)}
+                                    >
+                                        <IconExternalLink size={14} style={{ marginRight: 4 }} /> Details
+                                    </button>
+                                    {user?.role?.toUpperCase() === "VOLUNTEER" && (
                                         <button
                                             className={`opp-apply-btn ${appliedIds.has(opp.id) ? "applied" : ""}`}
                                             onClick={() => {
@@ -182,13 +208,26 @@ function Opportunities() {
                                         >
                                             {appliedIds.has(opp.id) ? "Applied" : "Apply"}
                                         </button>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
                 )}
             </main>
+
+            {detailOpp && (
+                <OpportunityDetailModal
+                    opportunity={detailOpp}
+                    onClose={() => setDetailOpp(null)}
+                    hasApplied={appliedIds.has(detailOpp.id)}
+                    onApply={(opp) => {
+                        setDetailOpp(null);
+                        setSubmitError("");
+                        setSelectedOpp(opp);
+                    }}
+                />
+            )}
 
             {selectedOpp && (
                 <ApplicationFormModal

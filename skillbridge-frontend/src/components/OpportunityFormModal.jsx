@@ -1,5 +1,6 @@
-import { useState } from "react";
-import "./EditProfileModal.css"; // reuse same modal styles
+import { useState, useEffect } from "react";
+import { IconX } from "./Icons";
+import "./EditProfileModal.css";
 
 function OpportunityFormModal({ ngoId, opportunity, onClose, onSaved }) {
     const isEdit = Boolean(opportunity);
@@ -28,6 +29,7 @@ function OpportunityFormModal({ ngoId, opportunity, onClose, onSaved }) {
             const method = isEdit ? "PUT" : "POST";
             const res = await fetch(url, {
                 method,
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
@@ -47,7 +49,7 @@ function OpportunityFormModal({ ngoId, opportunity, onClose, onSaved }) {
             <div className="modal-card" style={{ maxWidth: 540 }} onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3>{isEdit ? "Edit Opportunity" : "Create Opportunity"}</h3>
-                    <button className="modal-close" onClick={onClose} aria-label="Close">✕</button>
+                    <button className="modal-close" onClick={onClose} aria-label="Close"><IconX size={18} /></button>
                 </div>
 
                 <form className="modal-form" onSubmit={handleSubmit}>

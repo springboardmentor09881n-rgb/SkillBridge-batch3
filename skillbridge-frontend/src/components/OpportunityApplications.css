@@ -1,0 +1,281 @@
+/* ── Opportunity Applications Page ── */
+.opp-apps-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px;
+}
+
+.opp-apps-back {
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 0;
+    margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: opacity 0.2s;
+}
+
+.opp-apps-back:hover {
+    opacity: 0.7;
+}
+
+.opp-apps-header {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 20px;
+}
+
+.opp-apps-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.opp-apps-title-row h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 6px;
+}
+
+.opp-apps-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.opp-apps-meta {
+    margin-bottom: 18px;
+}
+
+.opp-apps-meta .opp-info {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+/* Stats bar */
+.opp-apps-stats {
+    display: flex;
+    gap: 12px;
+    padding-top: 18px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.opp-apps-stat {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+    background: var(--bg-main);
+    border-radius: var(--radius-sm);
+}
+
+.opp-apps-stat-value {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.opp-apps-stat-value.total {
+    color: var(--primary);
+}
+
+.opp-apps-stat-value.pending {
+    color: #b45309;
+}
+
+.opp-apps-stat-value.accepted {
+    color: #059669;
+}
+
+.opp-apps-stat-value.rejected {
+    color: var(--danger);
+}
+
+.opp-apps-stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Applications list */
+.opp-apps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.opp-app-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 22px 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid #e8eef5;
+    transition: all 0.2s ease;
+}
+
+.opp-app-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.opp-app-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.opp-app-applicant {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.opp-app-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.opp-app-applicant h4 {
+    font-size: 1rem;
+    font-weight: 650;
+    color: var(--text-primary);
+    margin: 0 0 3px;
+}
+
+.opp-app-email,
+.opp-app-location {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 0 0 2px;
+}
+
+/* Skills */
+.opp-app-skills {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.opp-app-skills-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.opp-app-skills .opp-meta {
+    margin-bottom: 0;
+}
+
+/* Details */
+.opp-app-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.opp-app-detail-item {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.opp-app-detail-item strong {
+    color: var(--text-primary);
+}
+
+/* View Applications button on opportunity card */
+.btn-view-apps {
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background: rgba(79, 70, 229, 0.08);
+    color: var(--primary);
+    border: 1.5px solid rgba(79, 70, 229, 0.2);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-view-apps:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.btn-view-apps .app-count-badge {
+    background: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+    margin-left: 2px;
+}
+
+.btn-view-apps:hover .app-count-badge {
+    background: white;
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .opp-apps-page {
+        padding: 20px 16px;
+    }
+
+    .opp-apps-header {
+        padding: 20px;
+    }
+
+    .opp-apps-title-row {
+        flex-direction: column;
+    }
+
+    .opp-apps-stats {
+        flex-wrap: wrap;
+    }
+
+    .opp-apps-stat {
+        min-width: 70px;
+    }
+
+    .opp-app-card {
+        padding: 16px 18px;
+    }
+
+    .opp-app-applicant {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
