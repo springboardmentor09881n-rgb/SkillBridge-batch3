@@ -2,6 +2,7 @@ package com.skillbridge.controller;
 
 import com.skillbridge.model.*;
 import com.skillbridge.repository.*;
+import com.skillbridge.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/applications")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class ApplicationController {
 
     public static class ApplyRequest {
@@ -70,6 +71,9 @@ public class ApplicationController {
     @Autowired
     private OpportunityRepository opportunityRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @PostMapping("/apply")
     public ResponseEntity<?> applyFromParams(@RequestParam Long volunteerId,
                                              @RequestParam Long opportunityId) {
@@ -106,8 +110,18 @@ public class ApplicationController {
 
         Application app = applicationRepository.findById(id).orElseThrow();
         app.setStatus(status);
+        Application saved = applicationRepository.save(app);
 
-        return applicationRepository.save(app);
+        // Notify volunteer about status change
+        if (app.getVolunteer() != null && app.getOpportunity() != null) {
+            notificationService.notifyApplicationStatusChange(
+                    app.getVolunteer(),
+                    app.getOpportunity().getTitle(),
+                    status
+            );
+        }
+
+        return saved;
     }
 
     private ResponseEntity<?> createApplication(Long volunteerId,
@@ -137,31 +151,16 @@ public class ApplicationController {
 
         applicationRepository.save(application);
 
+        // Notify NGO about new application
+        if (opportunity.getNgo() != null) {
+            String volunteerName = volunteer.getFullName() != null ? volunteer.getFullName() : volunteer.getUsername();
+            notificationService.notifyNewApplication(opportunity.getNgo(), volunteerName, opportunity.getTitle());
+        }
+
         return ResponseEntity.ok(Map.of("message", "Application submitted successfully"));
     }
-
-    @GetMapping("/opportunity/{id}")
-    public List<Application> getApplications(@PathVariable Long id) {
-        return applicationRepository.findByOpportunityId(id);
-    }
-    @GetMapping("/volunteer/{volunteerId}")
-    public List<Application> getApplicationsByVolunteer(@PathVariable Long volunteerId) {
-        return applicationRepository.findByVolunteerId(volunteerId);
-    }
-
-
     @GetMapping("/ngo/{ngoId}")
     public List<Application> getApplicationsForNgo(@PathVariable Long ngoId) {
         return applicationRepository.findByOpportunityNgoId(ngoId);
-    }
-
-    @PutMapping("/{id}")
-    public Application updateStatus(@PathVariable Long id,
-                                    @RequestParam String status) {
-
-        Application app = applicationRepository.findById(id).orElseThrow();
-        app.setStatus(status);
-
-        return applicationRepository.save(app);
     }
 }
