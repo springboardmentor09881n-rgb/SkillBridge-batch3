@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IconX } from "./Icons";
 import "./EditProfileModal.css";
 
 function EditProfileModal({ user, onClose, onSave }) {
@@ -30,6 +31,7 @@ function EditProfileModal({ user, onClose, onSave }) {
         try {
             const res = await fetch(`http://localhost:8080/api/users/${user.id}`, {
                 method: "PUT",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
@@ -52,7 +54,7 @@ function EditProfileModal({ user, onClose, onSave }) {
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3>Edit Profile</h3>
-                    <button className="modal-close" onClick={onClose} aria-label="Close">✕</button>
+                    <button className="modal-close" onClick={onClose} aria-label="Close"><IconX size={18} /></button>
                 </div>
 
                 <form className="modal-form" onSubmit={handleSubmit}>

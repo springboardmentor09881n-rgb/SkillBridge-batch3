@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IconX } from "./Icons";
 import "./EditProfileModal.css";
 
 function ApplicationFormModal({ opportunity, onClose, onSubmit, loading, error }) {
@@ -25,7 +26,7 @@ function ApplicationFormModal({ opportunity, onClose, onSubmit, loading, error }
             <div className="modal-card" style={{ maxWidth: 620 }} onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3>Apply for {opportunity?.title}</h3>
-                    <button className="modal-close" onClick={onClose} aria-label="Close">✕</button>
+                    <button className="modal-close" onClick={onClose} aria-label="Close"><IconX size={18} /></button>
                 </div>
 
                 <form className="modal-form" onSubmit={handleSubmit}>

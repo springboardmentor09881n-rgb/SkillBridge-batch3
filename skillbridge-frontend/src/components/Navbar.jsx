@@ -1,4 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import NotificationBell from "./NotificationBell";
+import { IconBridge } from "./Icons";
 import "./Navbar.css";
 
 function Navbar() {
@@ -23,7 +25,7 @@ function Navbar() {
 
                 {/* Brand — left */}
                 <div className="navbar-brand" onClick={() => navigate("/")}>
-                    <span className="brand-icon">🌉</span>
+                    <span className="brand-icon"><IconBridge size={22} /></span>
                     <span className="brand-text">SkillBridge</span>
                 </div>
 
@@ -42,7 +44,6 @@ function Navbar() {
                         >
                             Dashboard
                         </span>
-                        {/* Volunteers see Opportunities, NGOs manage within dashboard */}
                         {user.role !== "ngo" && (
                             <span
                                 className={`nav-link ${isActive("/opportunities") ? "active" : ""}`}
@@ -51,6 +52,12 @@ function Navbar() {
                                 Opportunities
                             </span>
                         )}
+                        <span
+                            className={`nav-link ${isActive("/messaging") ? "active" : ""}`}
+                            onClick={() => navigate("/messaging")}
+                        >
+                            Messages
+                        </span>
                     </div>
                 )}
 
@@ -58,6 +65,7 @@ function Navbar() {
                 <div className="navbar-right">
                     {user ? (
                         <>
+                            <NotificationBell userId={user.id} />
                             <div className="user-avatar">
                                 {(user.fullName || user.username || "U").charAt(0).toUpperCase()}
                             </div>
