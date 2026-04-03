@@ -1,0 +1,1 @@
+Message validation failed: receiverId: Cast to ObjectId failed for value "invalid_id_string_test" (type string) at path "receiverId" because of "BSONError"

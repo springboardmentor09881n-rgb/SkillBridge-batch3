@@ -14,6 +14,8 @@ const VolunteerDashboard = () => {
   };
 
   const [opportunities, setOpportunities] = useState([]);
+  const [matchedOpportunities, setMatchedOpportunities] = useState([]);
+  const [myApplications, setMyApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewingOpp, setViewingOpp] = useState(null);
 
@@ -32,6 +34,15 @@ const VolunteerDashboard = () => {
         const data = await response.json();
         setOpportunities(data);
       }
+      
+      // Fetch matches
+      if (user && (user.id || user._id)) {
+        const matchRes = await fetch(`http://localhost:5000/api/opportunities/matches/${user.id || user._id}`);
+        if (matchRes.ok) {
+          const matchData = await matchRes.json();
+          setMatchedOpportunities(matchData.slice(0, 3)); // Show top 3 matches
+        }
+      }
     } catch (error) {
       console.error("Error fetching opportunities:", error);
     } finally {
@@ -39,12 +50,28 @@ const VolunteerDashboard = () => {
     }
   };
 
+  const fetchApplications = async (isBackground = false) => {
+    if (!user || (!user.id && !user._id)) return;
+    try {
+      const response = await fetch(`http://localhost:5000/api/applications/volunteer/${user._id || user.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Show newest first
+        setMyApplications(data.reverse());
+      }
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+    }
+  };
+
   useEffect(() => {
     fetchOpportunities();
+    fetchApplications();
 
     // Poll for new opportunities every 10 seconds
     const intervalId = setInterval(() => {
       fetchOpportunities(true);
+      fetchApplications(true);
     }, 10000);
 
     return () => clearInterval(intervalId);
@@ -73,10 +100,10 @@ const VolunteerDashboard = () => {
             <span className="text-black border-b-2 border-black pb-1 cursor-pointer">
               Dashboard
             </span>
-            <span className="hover:text-black cursor-pointer transition-colors">
+            <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/VolunteerDashboard/Opportunities')}>
               Opportunities
             </span>
-            <span className="hover:text-black cursor-pointer transition-colors">
+            <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/Messages')}>
               Messages
             </span>
           </div>
@@ -140,7 +167,30 @@ const VolunteerDashboard = () => {
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
                 Activity
               </h3>
-              <p className="text-sm text-gray-500">No recent activity</p>
+              <div className="space-y-3">
+                {myApplications && myApplications.filter(app => app.status !== "Pending").length > 0 ? (
+                  myApplications
+                    .filter(app => app.status !== "Pending")
+                    .slice(0, 5) // Display the 5 most recent activity messages
+                    .map(app => (
+                    <div key={app._id} className={`p-3 rounded-lg text-sm border shadow-sm ${app.status === 'Accepted' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+                      <p className="font-semibold flex items-center justify-between mb-1">
+                        Application {app.status}
+                        {app.status === 'Accepted' ? (
+                          <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
+                        ) : (
+                          <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        )}
+                      </p>
+                      <p className="text-xs mt-1 leading-relaxed">
+                        Your application for <span className="font-semibold text-gray-900 px-1 py-0.5 bg-white/50 rounded inline-block shadow-sm">"{app.opportunityId?.title || "an opportunity"}"</span> has been {app.status.toLowerCase()}.
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500 italic">No recent activity</p>
+                )}
+              </div>
             </div>
 
             {/* Logout Button */}
@@ -159,7 +209,67 @@ const VolunteerDashboard = () => {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1">
+        <main className="flex-1 flex flex-col gap-8">
+          
+          {/* MATCHES PANEL */}
+          {!loading && matchedOpportunities.length > 0 && (
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 overflow-hidden">
+              <div className="p-6 border-b border-blue-100/50 flex justify-between items-center bg-white/50">
+                <div>
+                  <h2 className="text-xl font-bold text-blue-900 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    Top Match Suggestions
+                  </h2>
+                  <p className="text-sm text-blue-700/80 mt-1">Based on your skills & location</p>
+                </div>
+              </div>
+              <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                {matchedOpportunities.map((match) => (
+                  <div key={match._id} className="bg-white rounded-xl shadow-sm border border-blue-100 p-5 hover:shadow-md transition-shadow relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-bold text-gray-900 line-clamp-1 flex-1 pr-2" title={match.title}>{match.title}</h3>
+                      <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                        {match.matchScore} pts
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center text-xs text-gray-500 mb-3 gap-3">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-gray-400" />
+                        <span className="truncate max-w-[80px]" title={match.location}>{match.location}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-gray-400" />
+                        <span>{match.duration}</span>
+                      </div>
+                    </div>
+                    
+                    {match.matchedSkills && match.matchedSkills.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-[10px] text-gray-400 mb-1 uppercase tracking-wider font-semibold">Matched Skills</p>
+                        <div className="flex flex-wrap gap-1">
+                          {match.matchedSkills.map(skill => (
+                            <span key={skill} className="bg-green-50 text-green-700 border border-green-200 text-[10px] px-2 py-0.5 rounded-full capitalize">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <button 
+                      onClick={() => setViewingOpp(match)}
+                      className="w-full mt-auto py-2 bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 font-semibold text-xs rounded-lg transition-colors"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Find Opportunities Header */}
             <div className="p-6 border-b border-gray-200">
@@ -172,6 +282,22 @@ const VolunteerDashboard = () => {
 
               {/* Filters */}
               <div className="p-5 border border-gray-200 rounded-xl mb-2">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="font-semibold text-gray-800">Filter Opportunities</span>
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSkillFilter("");
+                      setLocationFilter("");
+                      setDurationFilter("");
+                      setStatusFilter("Open");
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-md text-sm font-medium transition-colors border border-red-100 shadow-sm"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                    Reset Filters
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Skills Column */}
                   <div>

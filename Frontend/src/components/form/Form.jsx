@@ -52,7 +52,7 @@ const Form = () => {
           navigate("/VolunteerDashboard", { state: { user: newUser } });
         }
       } else {
-        alert("Error: " + data.message);
+        alert("Error: " + (data.message || data.error || "Signup failed"));
       }
     } catch (error) {
       alert("Backend is not running. Check your terminal!");

@@ -60,7 +60,7 @@ const OrganizationDashboard = () => {
             <span className="text-black border-b-2 border-black pb-1 cursor-pointer">Dashboard</span>
             <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/OrganizationDashboard/Opportunities')}>Opportunities</span>
             <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/OrganizationDashboard/Applications')}>Applications</span>
-            <span className="hover:text-black cursor-pointer transition-colors">Messages</span>
+            <span className="hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/OrganizationMessages')}>Messages</span>
           </div>
         </div>
         <div className="flex items-center space-x-4">
@@ -101,7 +101,7 @@ const OrganizationDashboard = () => {
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 Applications
               </li>
-              <li className="hover:bg-gray-50 px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-colors">
+              <li onClick={() => navigate('/OrganizationMessages')} className="hover:bg-gray-50 px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-colors">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                 Messages
               </li>
@@ -201,7 +201,7 @@ const OrganizationDashboard = () => {
               </button>
 
               {/* View Messages Button */}
-              <button className="flex flex-col items-center justify-center py-8 border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-sm hover:bg-gray-50 transition-all group">
+              <button onClick={() => navigate('/OrganizationMessages')} className="flex flex-col items-center justify-center py-8 border border-gray-200 rounded-lg hover:border-gray-300 hover:shadow-sm hover:bg-gray-50 transition-all group">
                 <div className="w-12 h-12 flex items-center justify-center mb-3">
                   <svg className="w-8 h-8 text-gray-500 group-hover:text-gray-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
                 </div>
